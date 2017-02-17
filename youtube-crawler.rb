@@ -43,10 +43,11 @@ if $?.exitstatus != 0
 end
 
 # Convert to mp3
-video_file = Dir.glob("*#{video_id}*.*")[0]
+video_file = Dir.glob("*#{video_id}*.*").find{|filename| not filename.end_with? '.txt'}
 puts "\n\n--> Converting '#{video_file}' to mp3"
 mp3_filename = File.basename(video_file, '.*') + ".mp3"
 command = "avconv -i \"#{video_file}\" -c:a mp3 -qscale:a 2 \"#{mp3_filename}\""
+puts "Running \"#{command}\""
 system(command)
 if $?.exitstatus != 0
     exit(-1)

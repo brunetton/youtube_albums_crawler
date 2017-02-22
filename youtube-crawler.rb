@@ -20,7 +20,7 @@ end
 url = args['<url>']
 
 # Check youtube url
-if match = url.match(/(.*)youtube(.*)\/watch\?v=(.*)$/)
+if match = url.match(/(.*)youtube(.*)\/watch\?v=([^#\&\?]+)/)
   video_id = match.captures[2]
 else
   abort("\"#{url}\" is not a valid youtube url !")

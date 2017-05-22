@@ -32,7 +32,7 @@ video_description = page.css('p[id="eow-description"]').inner_html.gsub('<br>', 
 video_title = page.css('h1[class="watch-title-container"]').text.strip
 print "#{video_id}: #{video_title}\n\n#{video_description}\n\n"
 # Save text temporary
-File.open("#{video_title}-#{video_id}.txt", 'w') { |file| file.write(video_description) }
+File.open("#{video_title.gsub('/','-')}-#{video_id}.txt", 'w') { |file| file.write(video_description) }
 
 # Download file
 command = "youtube-dl \"#{url}\""

@@ -8,7 +8,10 @@ require "docopt"
 doc = <<DOCOPT
 Usage:
 #{__FILE__} <url>
-#{__FILE__} --from-file <filename>
+#{__FILE__} --from-file <filename> [--numbering]
+
+Options:
+  --numbering:    add a number at begining of mp3 files (ex: 01 - blabla.mp3)
 
 Convert given video link, or all video links found in given file to mp3, using youtube-dl and avconv.
 Audio level normalized using loudnorm audio filter (http://ffmpeg.org/ffmpeg-all.html#loudnorm)
@@ -17,7 +20,7 @@ DOCOPT
 
 YOUTUBE_LINK_REGEXP = /(https?:\/\/.*youtube.*\/watch\?v=([^#\&\?\s]+))/
 
-def treat_url(url, video_id)
+def treat_url(url, video_id, audio_file_number=nil)
 
   def make_filename_complient(title)
     return title.gsub('/','-').gsub('`','\'')
@@ -43,8 +46,8 @@ def treat_url(url, video_id)
   # Convert to mp3
   video_file = Dir.glob("*#{video_id}*.*").find{|filename| not filename.end_with? '.txt'}  # Retreive file by video_id
   puts "\n\n--> Converting '#{video_file}' to mp3"
-  mp3_filename = File.basename(make_filename_complient(video_file), '.*') + '.mp3'
-  puts "'#{mp3_filename}'"
+  number = audio_file_number ? "%02d - " % audio_file_number : ''
+  mp3_filename = number + File.basename(make_filename_complient(video_file), '.*') + '.mp3'
   command = "avconv -i \"#{video_file}\" -c:a mp3 -filter:a loudnorm=i=-10 -qscale:a 2 \"#{mp3_filename}\""
   puts "Running \"#{command}\""
   system(command)
@@ -80,13 +83,15 @@ if args['<url>']
   treat_url(url, video_id)
   puts "\n\n--> End"
 elsif args['<filename>']
-  n_found = 0
+  file_number = 0
   File.readlines(args['<filename>']).each do |line|
     if match = line.match(YOUTUBE_LINK_REGEXP)
+      file_number += 1
       url, video_id = match.captures
       puts "\n\n***** #{url}\n"
-      treat_url(url, video_id)
+      number = args['--numbering'] ? file_number : nil
+      treat_url(url, video_id, number)
     end
   end
-  puts "\n\nEnd\n#{n_found} files treated."
+  puts "\n\nEnd\n#{file_number} files treated."
 end

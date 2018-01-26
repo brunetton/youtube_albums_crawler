@@ -7,7 +7,11 @@ require "docopt"
 
 doc = <<DOCOPT
 Usage:
-  #{__FILE__} <url>
+#{__FILE__} <url>
+
+Convert given youtube video link to mp3, using youtube-dl and avconv.
+Audio level normalized using loudnorm audio filter (http://ffmpeg.org/ffmpeg-all.html#loudnorm)
+
 DOCOPT
 
 begin
@@ -20,7 +24,7 @@ end
 url = args['<url>']
 
 # Check youtube url
-if match = url.match(/(.*)youtube(.*)\/watch\?v=([^#\&\?]+)/)
+if match = url.match(/(.*)youtube(.*)\/watch\?v=([^#\&\?]+)/)  # TODO: allow video ID
   video_id = match.captures[2]
 else
   abort("\"#{url}\" is not a valid youtube url !")
@@ -47,7 +51,7 @@ end
 video_file = Dir.glob("*#{video_id}*.*").find{|filename| not filename.end_with? '.txt'}
 puts "\n\n--> Converting '#{video_file}' to mp3"
 mp3_filename = File.basename(video_file.gsub('`','\''), '.*') + ".mp3"
-command = "avconv -i \"#{video_file}\" -c:a mp3 -qscale:a 2 \"#{mp3_filename}\""
+command = "avconv -i \"#{video_file}\" -c:a mp3 -filter:a loudnorm=i=-10 -qscale:a 2 \"#{mp3_filename}\""
 puts "Running \"#{command}\""
 system(command)
 if $?.exitstatus != 0

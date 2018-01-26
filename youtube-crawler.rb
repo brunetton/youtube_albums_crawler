@@ -32,7 +32,8 @@ video_description = page.css('p[id="eow-description"]').inner_html.gsub('<br>', 
 video_title = page.css('h1[class="watch-title-container"]').text.strip
 print "#{video_id}: #{video_title}\n\n#{video_description}\n\n"
 # Save text temporary
-File.open("#{video_title.gsub('/','-')}-#{video_id}.txt", 'w') { |file| file.write(video_description) }
+video_filename_file_compliant = "#{video_title.gsub('/','-').gsub('`','\'')}-#{video_id}.txt"
+File.open(video_filename_file_compliant, 'w') { |file| file.write(video_description) }
 
 # Download file
 command = "youtube-dl \"#{url}\""
@@ -45,7 +46,7 @@ end
 # Convert to mp3
 video_file = Dir.glob("*#{video_id}*.*").find{|filename| not filename.end_with? '.txt'}
 puts "\n\n--> Converting '#{video_file}' to mp3"
-mp3_filename = File.basename(video_file, '.*') + ".mp3"
+mp3_filename = File.basename(video_file.gsub('`','\''), '.*') + ".mp3"
 command = "avconv -i \"#{video_file}\" -c:a mp3 -qscale:a 2 \"#{mp3_filename}\""
 puts "Running \"#{command}\""
 system(command)

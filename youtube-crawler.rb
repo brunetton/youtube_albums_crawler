@@ -48,7 +48,7 @@ def treat_url(url, video_id, audio_file_number=nil)
   puts "\n\n--> Converting '#{video_file}' to mp3"
   number = audio_file_number ? "%02d - " % audio_file_number : ''
   mp3_filename = number + File.basename(make_filename_complient(video_file), '.*') + '.mp3'
-  command = "avconv -i \"#{video_file}\" -c:a mp3 -filter:a loudnorm=i=-10 -qscale:a 2 \"#{mp3_filename}\""
+  command = "avconv -i \"#{video_file}\" -c:a mp3 -filter:a loudnorm=i=-18:lra=17 -qscale:a 2 \"#{mp3_filename}\""
   puts "Running \"#{command}\""
   system(command)
   if $?.exitstatus != 0

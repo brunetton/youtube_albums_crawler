@@ -1,6 +1,12 @@
 # Youtube albums crawler
 
-=> Work in progress !
+**UPDATE**: since recent versions of youtube-dl, almost all this script could be replaced by this simple command:
+
+```
+ youtube-dl -f bestaudio "https://youtu.be/..." --exec "ffmpeg -i {} -c:a mp3 -filter:a loudnorm=i=-18:lra=17 -qscale:a 2 {}.mp3 && rm {} "
+```
+
+You can remove the `--no-playlist` option if you want to download full playlist (if the youtube URL refers to a video and a playlist)
 
 ## What is it ?
 

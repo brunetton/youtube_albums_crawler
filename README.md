@@ -27,7 +27,15 @@ For now the script only download video, converts it to mp3 and save video descri
 
 ## Installation
 
-sudo aptitude install youtube-dl avconv
+### Debian
+
+sudo aptitude install youtube-dl ffmpeg
+sudo gem install docopt
+sudo gem install nokogiri
+
+### Arch Linux
+
+pacman -S youtube-dl ffmpeg
 sudo gem install docopt
 sudo gem install nokogiri
 

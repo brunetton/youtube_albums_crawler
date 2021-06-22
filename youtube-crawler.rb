@@ -92,13 +92,11 @@ if $args['<url>']
 elsif $args['<filename>']
   file_number = 0
   File.readlines($args['<filename>']).each do |line|
-    if match = line.match(YOUTUBE_LINK_REGEXP)
-      file_number += 1
-      url = match.captures
-      puts "\n\n***** #{url}\n"
-      number = $args['--numbering'] ? file_number : nil
-      treat_url(url, number)
-    end
+    file_number += 1
+    url = match.captures
+    puts "\n\n***** #{url}\n"
+    number = $args['--numbering'] ? file_number : nil
+    treat_url(url, number)
   end
   puts "\n\nEnd\n#{file_number} files treated."
 end

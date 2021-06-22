@@ -93,7 +93,7 @@ elsif $args['<filename>']
   file_number = 0
   File.readlines($args['<filename>']).each do |line|
     file_number += 1
-    url = match.captures
+    url = line.strip
     puts "\n\n***** #{url}\n"
     number = $args['--numbering'] ? file_number : nil
     treat_url(url, number)

@@ -23,9 +23,9 @@ FFMPEG_OPTIONS = "-c:a mp3 -filter:a loudnorm=i=-18:lra=17 -qscale:a 2"
 
 def treat_url(url, audio_file_number=nil)
   # Call youtube-dl to download sound and call ffmpeg
-  youtubedl-args = YOUTUBEDL_DEFAULT_ARGS
-  youtubedl-args += ' ' + $args['youtubedl-args'] if $args['youtubedl-args']
-  command = "youtube-dl #{youtubedl-args} \"#{url}\""
+  youtubedl_args = YOUTUBEDL_DEFAULT_ARGS
+  youtubedl_args += ' ' + $args['youtubedl-args'] if $args['youtubedl-args']
+  command = "youtube-dl #{youtubedl_args} \"#{url}\""
   puts "--> Running \"#{command}\""
   system(command)
 end

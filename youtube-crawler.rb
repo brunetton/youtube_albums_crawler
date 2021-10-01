@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require "docopt"
+require 'rainbow'
 
 doc = <<DOCOPT
 Usage:
@@ -17,16 +18,26 @@ Audio level normalized using loudnorm audio filter (http://ffmpeg.org/ffmpeg-all
 
 DOCOPT
 
-YOUTUBE_LINK_REGEXP = /(https?:\/\/.*youtube.*\/watch\?v=([^#\&\?\s]+))/
+# https://regexr.com/3anm9
+YOUTUBE_LINK_REGEXP = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/
 YOUTUBEDL_DEFAULT_ARGS = "-f bestaudio --no-playlist --console-title --exec 'ffmpeg -i {} -c:a mp3 -filter:a loudnorm=i=-18:lra=17 -qscale:a 2 {}.mp3 && rm {}'"
 FFMPEG_OPTIONS = "-c:a mp3 -filter:a loudnorm=i=-18:lra=17 -qscale:a 2"
 
 def treat_url(url, audio_file_number=nil)
+  # Check if this video has already been downloaded
+  if match = url.match(YOUTUBE_LINK_REGEXP)
+    video_id = match.captures[0]
+    already_exting_filename = Dir.foreach(Dir.pwd).detect{|f| f[video_id]}
+    if already_exting_filename
+      puts Rainbow("- #{video_id} has already been downloaded (\"#{already_exting_filename}\")\n-> abording").crimson
+      exit -1
+    end
+  end
   # Call youtube-dl to download sound and call ffmpeg
   youtubedl_args = YOUTUBEDL_DEFAULT_ARGS
   youtubedl_args += ' ' + $args['youtubedl-args'] if $args['youtubedl-args']
   command = "youtube-dl #{youtubedl_args} \"#{url}\""
-  puts "--> Running \"#{command}\""
+  puts Rainbow("--> Running \"#{command}\"").bright
   system(command)
 end
 
